@@ -40,6 +40,46 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+			<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-web</artifactId>
+	</dependency>
+	
+	
+			<dependency>
+	    <groupId>com.botham.news.db</groupId>
+  <artifactId>Java_NewsRepo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+				
+<!--  Ensure JDBC driver is loaded (for unit tests)? -->		
+	 	<dependency>
+   <groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>6.3.6.jre8-preview</version>
+  				<scope>compile</scope>
+</dependency>
+
+
+<!-- https://mvnrepository.com/artifact/com.github.dozermapper/dozer-core -->
+<dependency>
+    <groupId>com.github.dozermapper</groupId>
+    <artifactId>dozer-core</artifactId>
+    <version>6.4.0</version>
+</dependency>
+
+
+<!-- https://mvnrepository.com/artifact/net.sf.dozer/dozer -->
+<!-- <dependency> -->
+<!--     <groupId>net.sf.dozer</groupId> -->
+<!--     <artifactId>dozer</artifactId> -->
+<!--     <version>5.5.1</version> -->
+<!-- </dependency> -->
+
+
+		
 	</dependencies>
 
 	<build>
