@@ -5,10 +5,39 @@ Small rest app using https://
 
 Test the endpoint
    https://localhost:8445/api/hello
+   
+   Headers required for POST/PUT/PATCH
+   Content-Type "application/json"
 
 Get a list of all jobs 
-   https://localhost:8445/api/jobs
+   GET - https://localhost:8445/api/jobs
    
+Get 1 job by id   
+   GET - https://localhost:8445/api/job/1
    
-
+Create a job   
+   POST -  https://localhost:8445/api/job
+   Needs a body containing full job info...
+   
+   {"name":"createPDFsWithHeaders","description":"Create PDF headers",
+   "status":"A","currentStatus":"C","info":" ",
+   "start":"2018-09-05T20:35:00.023+0000",
+   "end":"2018-09-05T20:35:00.327+0000",
+   "lastRun":"2018-09-05T20:35:00.327+0000",
+   "schedule":" ","id":1,"notificationsSent":0,
+   "activeStart":"00:00:00","activeEnd":"23:59:59",
+   "allowConcurrent":"N","runOnNodes":"02",
+   "runOnInstances":"E","statusAcknowledged":"N"}
+   
+Update a job - Full
+   PUT -  https://localhost:8445/api/job
+   Needs a body containing job
+   
+Update a job - Partial
+   PATCH - https://localhost:8445/api/job
+      Needs a body containing at least the id plus any fields you
+      want to update
+      
+Delete a job 
+   DELETE - https://localhost:8445/api/job/1
 
