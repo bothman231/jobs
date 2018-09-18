@@ -3,13 +3,10 @@ package com.botham.news.db.jobs;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.PostConstruct;
-
-import org.aspectj.lang.annotation.Before;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,36 +14,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.botham.base.GlobalConstants;
-import com.botham.news.db.jobs.JobsRepository;
 import com.botham.news.domain.jobs.Jobs;
-import com.botham.news.domain.jobs.JobsMirror;
-import com.github.dozermapper.core.DozerBeanMapper;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
-
-
 
 //@ComponentScan({"com.botham.news.db.jobs"})
 //@ComponentScan(basePackageClasses = {JobsController.class})
 @RestController
 @RequestMapping("/api")
 
-
-
 public class JobsController {
-	
 
-	
-
+	Logger log = LoggerFactory.getLogger(JobsController.class);
 	
 	@Autowired
 	public JobsRepository jobsRepository;
-	
-	
-
-	
 	
    @GetMapping("/hello") 
    public String hello() {
@@ -56,10 +38,23 @@ public class JobsController {
    }
    
    
-// Needs Pagination etc
+// Needs Pagination/Fields/Filters/Sort etc
+// https://localhost:8445/api/jobs?fields=name,description&filter=name like 'fred'
+// https://localhost:8445/api/jobs?fields=name,description&filter=name like 'fred'&page=1,2,20&sort=name,-description
    
    @GetMapping("/jobs") 
-   public List<Jobs> getAllJobs() {	   
+   public List<Jobs> getAllJobs(@RequestParam(value="fields", required=false) String fields,
+		                        @RequestParam(value="filter", required=false) String filter,
+		                        @RequestParam(value="sort", required=false) String sort,
+		                        @RequestParam(value="page", required=false) String page) {	
+	   String mName="getAllJobs";
+	   if (log.isDebugEnabled()) {
+		   log.debug(mName+" Starts");
+		   log.debug(mName+" fields="+fields+"*");
+		   log.debug(mName+" filter="+filter+"*");
+		   log.debug(mName+" sort="+sort+"*");
+		   log.debug(mName+" page="+page+"*");
+	   }
 	   return jobsRepository.findAll();
    }
    
