@@ -7,6 +7,8 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,15 +61,22 @@ public class JobsController {
    }
    
 // This is done   
-   @GetMapping("/job/{id}") 
-   public Optional<Jobs> getJob(@PathVariable(value = "id", required = true) Integer id) {
+   @GetMapping("/jobs/{id}") 
+   public ResponseEntity<?> getJob(@PathVariable(value = "id", required = true) Integer id) {
 	   
 	   if (!jobsRepository.existsById(id)) {
-	      throw new NotFoundException("This job does not exist, id="+id);  
+
+	      return new ResponseEntity<ErrorMessage>(new ErrorMessage("This job does not exist, id="+id, "0001"), HttpStatus.OK);
 	   }
-	   
-	   //System.out.println("here "+"id="+id);
-	   return jobsRepository.findById(id);
+
+	   Jobs job = null;
+	   Optional<Jobs> jobsOpt= jobsRepository.findById(id);
+	   if (jobsOpt.isPresent()) {
+		   job=jobsOpt.get();
+	   }
+
+   
+	   return new ResponseEntity<Jobs>(job, HttpStatus.OK);
    }
    
    @RequestMapping(value="/job", method=RequestMethod.POST) 
