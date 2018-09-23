@@ -1,0 +1,190 @@
+// Java_jobs - Jenkinsfile
+
+// Do a global replace of Java_jobs
+// with whatever you new project is
+
+pipeline {
+    agent any
+    
+    tools {
+        maven 'Maven3.5'
+        jdk 'JDK8'
+    }
+   
+    stages {
+        stage('Init') {
+           steps {
+                         
+            script {
+                       envVars="${env.B_SYSTEM_NAME}"
+                    }
+                    
+              notifyStarted("Job started", "$envVars")
+              
+              
+                             echo 'Init'
+           
+           
+                    script {
+                       jobName="Java_jobs"
+                    }
+              
+              echo "jobName=${jobName}"
+           }
+        }        
+        
+        
+        
+        
+                
+        stage('Build') {
+            steps {
+                notifyStarted("Build started", "")
+                
+                echo 'Building..1'
+                echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
+                // export JENKINS_MAVEN_AGENT_DISABLED=true
+                sh 'mvn -B install'
+                
+                notifyStarted("Build ended", "")
+            }
+        }
+        
+        /* Comment this until Sonar is up and running */
+        /* check for existence of sonar before running this step? */
+        
+        stage('Sonarqube analysis') {
+           steps {
+              echo 'Sonarqube analysis'
+       
+              withSonarQubeEnv('SonarServer') {
+                 //sh "${scannerHome}/bin/sonar-scanner"
+                  sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar'
+              }           
+           }
+        }
+        
+        stage('Test') {
+            steps {
+                notifyStarted("Tests started", "")
+                
+                echo 'Testing.......1'
+                sh 'mvn -Dmaven.test.failure.ignore=true -B test'
+                
+                notifyStarted("Tests Ended", "")
+            }
+        }
+        
+        /* If this is enabled, the build will wait for manual intervention before proceeding */
+        
+        /*
+        stage('Checkup') {
+            steps {
+             input "Does the test look ok?"
+            }
+        }
+        */
+        
+        
+        stage('Deploy') {
+            steps {
+            
+// pipeline-utility-steps Plugin
+            
+                //def pom = readMavenPom file: 'pom.xml'
+                echo 'Deploying....1'
+                echo 'project.name=${project.name}'                
+                //def version = pom.version.replace("-SNAPSHOT", ".${currentBuild.number}")
+                //echo 'pom.version='${pom.version}
+                //echo 'version='${version}    
+                sh 'pwd'
+                sh 'cp target/Java_jobs.war /tmp/Java_jobs.war'
+                
+                /*
+                sshagent(['b319e6c5-51cb-4a93-a0d2-bd2b7b97948c']) {
+                   // 'myuid@' required for scp (this is from UID jenkins to UID myuid)
+                   //sh "scp $WORKSPACE/example.txt myuid@non_jenkins_svr:${dest_dir}"
+                   sh 'ssh -o StrictHostKeyChecking=no' 
+                   sh 'scp -vq target/Java_jobs.war admin-vert@108.191.209.180:ssh/'
+                }
+                */
+                //sh 'cp -r target/Java_jobs.war /tmp/Java_jobs.war admin@108.191.209.180:/ssh/'
+            }
+        }
+        
+        
+        /*
+        stage('DeployToArt') {
+           steps {
+             script {
+                 def uploadSpec = """{
+                 "files": [
+                 {
+                    "pattern": "Java_jobs/Java_jobs-0.0.1-SNAPSHOT.war",
+                    "target": "/libs-snapshot-local/"
+                 }
+                 ]
+              }"""
+              server.upload(uploadSpec)
+              }
+           }
+        }
+        */
+    
+    } // Stages
+    
+        post {
+        
+           always {
+              echo "Post-always Updated from github"
+           }
+        
+           success {
+              echo "Post-success"
+           }
+        
+           failure {
+              echo "Post-failure"
+           }
+        
+        }
+        
+} // Pipeline
+
+    def notifyStarted(message, envVars) {
+    
+    
+  // send to Slack
+ // slackSend (color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+ 
+  // send to HipChat
+  //hipchatSend (color: 'YELLOW', notify: true,
+  //    message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+  //  )
+ 
+  // send to email
+  
+
+  
+  emailext (
+      
+      
+	 // envVars="B_SYSTEM_NAME=${B_SYSTEM_NAME}"
+
+
+// https://jenkins.io/doc/pipeline/steps/email-ext/
+// Actually sends an email
+/*
+      subject: "$message : Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'", to: '231saleln@gmail.com',
+
+      body: "$message : Job ${env.BUILD_URL} ${env.JOB_NAME} envVars=$envVars",
+
+      recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+      
+      // developers
+      // Sends email to all the people who caused a change in the change set.
+      
+  */    
+      
+    )
+}
