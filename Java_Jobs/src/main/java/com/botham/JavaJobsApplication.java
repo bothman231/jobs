@@ -1,4 +1,4 @@
-package com.botham.news.db.jobs;
+package com.botham;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -10,8 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class })
 
 //@SpringBootApplication 
-@ComponentScan({"com.botham.news.db.jobs*"})
-@EntityScan({"com.botham.news.domain.jobs"})
+@ComponentScan({"com.botham*", "com.botham.news.db.jobs*", "com.botham.cust.db.customer*"})
+@EntityScan({"com.botham.news.domain.jobs", "com.botham.cust.domain.customer", "com.botham.news.domain.db"})
 //@EnableOAuth2Sso
 @EnableAutoConfiguration
 //@ComponentScan(basePackageClasses = {JobsController.class, JobsRepository.class})

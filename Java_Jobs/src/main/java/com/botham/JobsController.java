@@ -1,4 +1,4 @@
-package com.botham.news.db.jobs;
+package com.botham;
 
 import java.util.Date;
 import java.util.List;
@@ -16,11 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.botham.cust.db.customer.CustomerRepository;
+import com.botham.cust.domain.customer.Customer;
+import com.botham.news.db.jobs.ErrorMessage;
+import com.botham.news.db.jobs.JobsRepository;
 import com.botham.news.domain.jobs.Jobs;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 
-//@ComponentScan({"com.botham.news.db.jobs"})
+//@ComponentScan({"com.botham.news.db.jobs", "com.botham.cust.db.customer"})
 //@ComponentScan(basePackageClasses = {JobsController.class})
 @RestController
 @RequestMapping("/api")
@@ -31,6 +35,9 @@ public class JobsController {
 	
 	@Autowired
 	public JobsRepository jobsRepository;
+	
+	@Autowired
+	public CustomerRepository customerRepository;
 	
    @GetMapping("/hello") 
    public String hello() {
@@ -226,6 +233,22 @@ public class JobsController {
 	   //return "Updated 1";
 	}
    
+   
+   @GetMapping("/customers") 
+   public List<Customer> getAllCustomers(@RequestParam(value="fields", required=false) String fields,
+		                        @RequestParam(value="filter", required=false) String filter,
+		                        @RequestParam(value="sort", required=false) String sort,
+		                        @RequestParam(value="page", required=false) String page) {	
+	   String mName="getAllCustomers";
+	   if (log.isDebugEnabled()) {
+		   log.debug(mName+" Starts");
+		   log.debug(mName+" fields="+fields+"*");
+		   log.debug(mName+" filter="+filter+"*");
+		   log.debug(mName+" sort="+sort+"*");
+		   log.debug(mName+" page="+page+"*");
+	   }
+	   return customerRepository.findAll();
+   }
    
    @PostConstruct
    public void afterPropsSet() {
