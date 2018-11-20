@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-  <version>2.0.3.RELEASE</version>
+  <version>2.0.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -123,12 +123,14 @@
 </dependency>
 
 
+<dependency>
+  <groupId>com.botham.thing</groupId>
+  <artifactId>ThingDomain</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+</dependency>
 
-<!-- 		  <dependency> -->
-<!--     <groupId>org.springframework.security.oauth.boot</groupId> -->
-<!--     <artifactId>spring-security-oauth2-autoconfigure</artifactId> -->
-<!--   <version>2.0.5.RELEASE</version> -->
-<!--   </dependency> -->
+
+
   
   
 	</dependencies>
@@ -139,6 +141,18 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>-->
+			
+			
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+
+
 		</plugins>
 	</build>
 

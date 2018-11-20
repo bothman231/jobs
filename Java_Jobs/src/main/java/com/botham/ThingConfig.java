@@ -1,13 +1,17 @@
+
+
+
 package com.botham;
 
-import java.util.HashMap;
 
+import java.util.HashMap;
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -18,51 +22,64 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-@PropertySource({ "classpath:news.properties" })
-@EnableJpaRepositories(basePackages = "com.botham.news.db", 
-                       entityManagerFactoryRef = "newsEntityManager", 
-                       transactionManagerRef = "newsTransactionManager"
+@PropertySource({ "classpath:thing.properties" })
+@EnableJpaRepositories(basePackages = "com.botham.thing.db", 
+                       entityManagerFactoryRef = "thingEntityManager", 
+                       transactionManagerRef = "thingTransactionManager"
 )
-public class NewsConfig {
+
+
+public class ThingConfig {
+	
+	
+	Logger log = LoggerFactory.getLogger(ThingConfig.class);
+	
+	
     @Autowired
     private Environment env;
      
     @Bean
-    @Primary
-    public LocalContainerEntityManagerFactoryBean newsEntityManager() {
+    public LocalContainerEntityManagerFactoryBean thingEntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(newsDataSource());
-        em.setPackagesToScan(new String[] { "com.botham.news.domain" });
+        em.setDataSource(thingDataSource());
+        em.setPackagesToScan(new String[] { "com.botham.thing.persist" });
  
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         HashMap<String, Object> properties = new HashMap<>();
+        
+        log.error("hibernate.hbm2ddl.auto="+env.getProperty("hibernate.hbm2ddl.auto"));
+        
         properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        
+        log.error("hibernate.dialect="+env.getProperty("hibernate.dialect"));
+        
         properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
+        
+
         em.setJpaPropertyMap(properties);
  
         return em;
     }
  
-    @Primary
     @Bean
-    public DataSource newsDataSource() {
+    public DataSource thingDataSource() {
   
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("news.driverClassName"));
-        dataSource.setUrl(env.getProperty("news.jdbc.url"));
-        dataSource.setUsername(env.getProperty("news.user"));
-        dataSource.setPassword(env.getProperty("news.pass"));
+        dataSource.setDriverClassName(env.getProperty("thing.driverClassName"));
+        dataSource.setUrl(env.getProperty("thing.jdbc.url"));
+        dataSource.setUsername(env.getProperty("thing.user"));
+        dataSource.setPassword(env.getProperty("thing.pass"));
+        
  
         return dataSource;
     }
  
-    @Primary
     @Bean
-    public PlatformTransactionManager newsTransactionManager() {
+    public PlatformTransactionManager thingTransactionManager() {
   
         JpaTransactionManager transactionManager= new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(newsEntityManager().getObject());
+        transactionManager.setEntityManagerFactory(thingEntityManager().getObject());
         return transactionManager;
     }
 }

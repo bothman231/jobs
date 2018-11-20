@@ -8,11 +8,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
-
 import com.botham.news.db.jobs.JobsRepository;
-
-
 
 // Add this class if you are going to deploy this to an external TOMCAT Server,
 // Remove / Comment it for embedded STS

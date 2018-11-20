@@ -29,6 +29,20 @@ import com.github.dozermapper.core.Mapper;
 @RestController
 @RequestMapping("/api")
 
+// CRUD Services
+
+// GetMultiple
+// Get1
+// Create
+// Update
+// Delete
+// Change
+
+// Other services
+
+// Stop job scheduler
+
+
 public class JobsController {
 
 	Logger log = LoggerFactory.getLogger(JobsController.class);
@@ -261,4 +275,100 @@ public class JobsController {
 	   */
 	   
    }
+   
+   
+   @GetMapping("/jobs/scheduler") 
+   public String scheduler(@RequestParam(value="action", required=false) String action) {	
+	   String mName="";
+	   if (log.isDebugEnabled()) {
+		   log.debug(mName+" Starts");
+		   log.debug(mName+" action="+action+"*");
+	   }
+	   
+	   if (action.equalsIgnoreCase("start")) {
+	      //JobsHelper.startScheduler();
+	   } else {
+		  //JobsHelper.stopScheduler();
+	   }
+	   
+	   return "Scheduler......"+action;
+   }
+   
+   
+   @GetMapping("/jobs/pause") 
+   public String pause(@RequestParam(value="action", required=false) String action) {	
+	   String mName="pause";
+	   
+	   if (log.isDebugEnabled()) {
+		   log.debug(mName+" Starts");
+	   }
+	   
+	   int pausedCount=0;
+	   
+	   //if (action.equalsIgnoreCase("pause")) {
+		   List<Jobs> jobs = jobsRepository.findAll();
+		   for (Jobs entity : jobs) {
+			   if (entity.getStatus().equalsIgnoreCase("A")) {
+				   entity.setStatus("P");
+				   jobsRepository.save(entity);
+				   pausedCount++;
+			   }
+			   
+		   }
+	   //}
+	   
+	   return pausedCount+" jobs paused";
+   }
+   
+   
+   @GetMapping(value="/jobs/unpause/{id}") 
+   //@GetMapping("/jobs/{id}") 
+
+   public String unpause(@PathVariable("id") Optional<String> id) {	
+	   
+	   String mName="unpause";
+	   
+	   if (log.isDebugEnabled()) {
+		   log.debug(mName+" Starts, id="+id);
+	   }
+	   
+	   
+
+	   int unPausedCount=0;
+/*
+		   List<Jobs> jobs = jobsRepository.findAll();
+		   for (Jobs entity : jobs) {
+			   log.debug(mName+" entity="+entity.toString());
+			   
+			   if (id!=null) {
+			      if (Integer.valueOf(id)==entity.getId()) {
+			      
+				   
+				     if (entity.getStatus().equalsIgnoreCase("P")) {
+			       
+				        entity.setStatus("A");
+				        jobsRepository.save(entity);
+				        unPausedCount++;
+				   
+				     }
+			      }
+			   } else {
+			      if (entity.getStatus().equalsIgnoreCase("P")) {
+				       
+				     entity.setStatus("A");
+					 jobsRepository.save(entity);
+					 unPausedCount++;
+			      }
+					   
+			   } 
+				   
+			   
+			   
+		   }
+	   */
+	   
+	   return unPausedCount+" jobs un-paused";
+   }
+   
+   
 }
